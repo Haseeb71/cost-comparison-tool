@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,17 +11,17 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Edit, Trash2, Search } from "lucide-react"
 
-interface CategoriesManagerProps {
-  categories: any[]
+interface VendorsManagerProps {
+  vendors: any[]
 }
 
-export function CategoriesManager({ categories }: CategoriesManagerProps) {
+export function VendorsManager({ vendors }: VendorsManagerProps) {
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState<any>(null)
+  const [selectedVendor, setSelectedVendor] = useState<any>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
 
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredVendors = vendors.filter((vendor) =>
+    vendor.name.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   return (
@@ -30,12 +29,12 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Categories Management</h1>
-          <p className="text-muted-foreground">Organize tools into categories</p>
+          <h1 className="text-3xl font-bold">Vendors Management</h1>
+          <p className="text-muted-foreground">Manage AI tool vendors and companies</p>
         </div>
         <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Category
+          Add Vendor
         </Button>
       </div>
 
@@ -45,7 +44,7 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search categories..."
+              placeholder="Search vendors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -54,10 +53,10 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
         </CardContent>
       </Card>
 
-      {/* Categories Table */}
+      {/* Vendors Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Categories ({filteredCategories.length})</CardTitle>
+          <CardTitle>Vendors ({filteredVendors.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -65,28 +64,49 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Slug</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Tools Count</TableHead>
+                <TableHead>Website</TableHead>
+                <TableHead>Founded</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCategories.map((category) => (
-                <TableRow key={category.id}>
+              {filteredVendors.map((vendor) => (
+                <TableRow key={vendor.id}>
                   <TableCell>
                     <div className="flex items-center space-x-2">
-                      <span className="text-2xl">{category.icon || "📁"}</span>
-                      <span className="font-medium">{category.name}</span>
+                      {vendor.logo_url ? (
+                        <img
+                          src={vendor.logo_url}
+                          alt={vendor.name}
+                          className="h-8 w-8 rounded object-cover"
+                        />
+                      ) : (
+                        <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center">
+                          <span className="text-xs font-medium">{vendor.name.charAt(0)}</span>
+                        </div>
+                      )}
+                      <span className="font-medium">{vendor.name}</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <code className="text-sm bg-muted px-2 py-1 rounded">{category.slug}</code>
+                    <code className="text-sm bg-muted px-2 py-1 rounded">{vendor.slug}</code>
                   </TableCell>
                   <TableCell>
-                    <p className="text-sm text-muted-foreground max-w-md truncate">{category.description}</p>
+                    {vendor.website_url ? (
+                      <a
+                        href={vendor.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        Visit
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">No website</span>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <span className="font-medium">{category.tools?.length || 0}</span>
+                    {vendor.founded_year || <span className="text-muted-foreground">Unknown</span>}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
@@ -94,7 +114,7 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          setSelectedCategory(category)
+                          setSelectedVendor(vendor)
                           setIsFormOpen(true)
                         }}
                       >
@@ -104,19 +124,19 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
                         variant="ghost" 
                         size="sm"
                         onClick={async () => {
-                          if (confirm("Are you sure you want to delete this category?")) {
+                          if (confirm("Are you sure you want to delete this vendor?")) {
                             try {
-                              const response = await fetch(`/api/admin/categories/${category.id}`, {
+                              const response = await fetch(`/api/admin/vendors/${vendor.id}`, {
                                 method: "DELETE",
                               })
                               if (response.ok) {
                                 window.location.reload()
                               } else {
                                 const errorData = await response.json()
-                                alert(errorData.error || "Failed to delete category")
+                                alert(errorData.error || "Failed to delete vendor")
                               }
                             } catch (err) {
-                              alert("An error occurred while deleting the category")
+                              alert("An error occurred while deleting the vendor")
                             }
                           }
                         }}
@@ -132,17 +152,17 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
         </CardContent>
       </Card>
 
-      {/* Category Form Dialog */}
+      {/* Vendor Form Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{selectedCategory ? "Edit Category" : "Add New Category"}</DialogTitle>
+            <DialogTitle>{selectedVendor ? "Edit Vendor" : "Add New Vendor"}</DialogTitle>
           </DialogHeader>
-          <CategoryForm
-            category={selectedCategory}
+          <VendorForm
+            vendor={selectedVendor}
             onClose={() => {
               setIsFormOpen(false)
-              setSelectedCategory(null)
+              setSelectedVendor(null)
             }}
           />
         </DialogContent>
@@ -151,13 +171,19 @@ export function CategoriesManager({ categories }: CategoriesManagerProps) {
   )
 }
 
-function CategoryForm({ category, onClose }: { category?: any; onClose: () => void }) {
+function VendorForm({ vendor, onClose }: { vendor?: any; onClose: () => void }) {
   const [formData, setFormData] = useState({
-    name: category?.name || "",
-    slug: category?.slug || "",
-    description: category?.description || "",
-    icon: category?.icon || "",
+    name: vendor?.name || "",
+    slug: vendor?.slug || "",
+    description: vendor?.description || "",
+    website_url: vendor?.website_url || "",
+    logo_url: vendor?.logo_url || "",
+    founded_year: vendor?.founded_year || "",
+    headquarters: vendor?.headquarters || "",
   })
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const generateSlug = (name: string) => {
     return name
@@ -170,12 +196,9 @@ function CategoryForm({ category, onClose }: { category?: any; onClose: () => vo
     setFormData((prev) => ({
       ...prev,
       name,
-      slug: !category ? generateSlug(name) : prev.slug,
+      slug: !vendor ? generateSlug(name) : prev.slug,
     }))
   }
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -183,12 +206,9 @@ function CategoryForm({ category, onClose }: { category?: any; onClose: () => vo
     setError(null)
 
     try {
-      const url = category ? `/api/admin/categories/${category.id}` : "/api/admin/categories"
-      const method = category ? "PUT" : "POST"
+      const url = vendor ? `/api/admin/vendors/${vendor.id}` : "/api/admin/vendors"
+      const method = vendor ? "PUT" : "POST"
 
-      console.log("Sending request to:", url, "with method:", method)
-      console.log("Request body:", formData)
-      
       const response = await fetch(url, {
         method,
         headers: {
@@ -197,19 +217,9 @@ function CategoryForm({ category, onClose }: { category?: any; onClose: () => vo
         body: JSON.stringify(formData),
       })
 
-      console.log("Response status:", response.status)
-      console.log("Response headers:", response.headers)
-
       if (!response.ok) {
-        let errorMessage = "Failed to save category"
-        try {
-          const errorData = await response.json()
-          errorMessage = errorData.error || errorMessage
-        } catch (parseError) {
-          console.error("Failed to parse error response:", parseError)
-          errorMessage = `HTTP ${response.status}: ${response.statusText}`
-        }
-        throw new Error(errorMessage)
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to save vendor")
       }
 
       // Refresh the page to show updated data
@@ -224,12 +234,12 @@ function CategoryForm({ category, onClose }: { category?: any; onClose: () => vo
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Category Name *</Label>
+        <Label htmlFor="name">Vendor Name *</Label>
         <Input
           id="name"
           value={formData.name}
           onChange={(e) => handleNameChange(e.target.value)}
-          placeholder="e.g., AI Writing Tools"
+          placeholder="e.g., OpenAI"
           required
         />
       </div>
@@ -240,18 +250,8 @@ function CategoryForm({ category, onClose }: { category?: any; onClose: () => vo
           id="slug"
           value={formData.slug}
           onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
-          placeholder="e.g., ai-writing-tools"
+          placeholder="e.g., openai"
           required
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="icon">Icon (Emoji)</Label>
-        <Input
-          id="icon"
-          value={formData.icon}
-          onChange={(e) => setFormData((prev) => ({ ...prev, icon: e.target.value }))}
-          placeholder="e.g., ✍️"
         />
       </div>
 
@@ -261,9 +261,56 @@ function CategoryForm({ category, onClose }: { category?: any; onClose: () => vo
           id="description"
           value={formData.description}
           onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-          placeholder="Brief description of this category"
+          placeholder="Brief description of the vendor"
           rows={3}
         />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="website_url">Website URL</Label>
+          <Input
+            id="website_url"
+            value={formData.website_url}
+            onChange={(e) => setFormData((prev) => ({ ...prev, website_url: e.target.value }))}
+            placeholder="https://example.com"
+            type="url"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="logo_url">Logo URL</Label>
+          <Input
+            id="logo_url"
+            value={formData.logo_url}
+            onChange={(e) => setFormData((prev) => ({ ...prev, logo_url: e.target.value }))}
+            placeholder="https://example.com/logo.png"
+            type="url"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="founded_year">Founded Year</Label>
+          <Input
+            id="founded_year"
+            value={formData.founded_year}
+            onChange={(e) => setFormData((prev) => ({ ...prev, founded_year: e.target.value }))}
+            placeholder="e.g., 2015"
+            type="number"
+            min="1800"
+            max={new Date().getFullYear()}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="headquarters">Headquarters</Label>
+          <Input
+            id="headquarters"
+            value={formData.headquarters}
+            onChange={(e) => setFormData((prev) => ({ ...prev, headquarters: e.target.value }))}
+            placeholder="e.g., San Francisco, CA"
+          />
+        </div>
       </div>
 
       {error && (
@@ -271,13 +318,13 @@ function CategoryForm({ category, onClose }: { category?: any; onClose: () => vo
           {error}
         </div>
       )}
-      
+
       <div className="flex justify-end space-x-4">
         <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
           Cancel
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : (category ? "Update Category" : "Create Category")}
+          {isLoading ? "Saving..." : (vendor ? "Update Vendor" : "Create Vendor")}
         </Button>
       </div>
     </form>

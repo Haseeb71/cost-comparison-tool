@@ -8,12 +8,13 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { createClient } from "@/lib/supabase/client"
-import { LayoutDashboard, Settings, Star, BarChart3, Menu, LogOut, Shield, Package, Tags } from "lucide-react"
+import { LayoutDashboard, Settings, Star, BarChart3, Menu, LogOut, Shield, Package, Tags, Building2 } from "lucide-react"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Tools", href: "/admin/tools", icon: Package },
   { name: "Categories", href: "/admin/categories", icon: Tags },
+  { name: "Vendors", href: "/admin/vendors", icon: Building2 },
   { name: "Reviews", href: "/admin/reviews", icon: Star },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Settings", href: "/admin/settings", icon: Settings },

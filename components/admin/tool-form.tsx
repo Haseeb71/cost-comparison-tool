@@ -90,11 +90,38 @@ export function ToolForm({ tool, categories, vendors, onClose }: ToolFormProps) 
     }
   }
 
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement save functionality
-    console.log("Saving tool:", formData)
-    onClose()
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const url = tool ? `/api/admin/tools/${tool.id}` : "/api/admin/tools"
+      const method = tool ? "PUT" : "POST"
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to save tool")
+      }
+
+      // Refresh the page to show updated data
+      window.location.reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -389,11 +416,19 @@ export function ToolForm({ tool, categories, vendors, onClose }: ToolFormProps) 
       </Card>
 
       {/* Form Actions */}
+      {error && (
+        <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md">
+          {error}
+        </div>
+      )}
+      
       <div className="flex justify-end space-x-4">
-        <Button type="button" variant="outline" onClick={onClose}>
+        <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
           Cancel
         </Button>
-        <Button type="submit">{tool ? "Update Tool" : "Create Tool"}</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Saving..." : (tool ? "Update Tool" : "Create Tool")}
+        </Button>
       </div>
     </form>
   )

@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Menu, X } from "lucide-react"
+import { Search, Menu, X, Shield } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
@@ -49,6 +49,13 @@ export function Header() {
 
             <ThemeToggle />
 
+            <Button asChild variant="outline" className="hidden sm:inline-flex">
+              <Link href="/admin/login">
+                <Shield className="h-4 w-4 mr-2" />
+                Admin
+              </Link>
+            </Button>
+
             <Button asChild className="hidden sm:inline-flex">
               <Link href="/submit">Submit Tool</Link>
             </Button>
@@ -76,7 +83,13 @@ export function Header() {
               <Link href="/blog" className="text-foreground hover:text-primary transition-colors">
                 Blog
               </Link>
-              <div className="pt-4 border-t">
+              <div className="pt-4 border-t space-y-3">
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/admin/login">
+                    <Shield className="h-4 w-4 mr-2" />
+                    Admin Login
+                  </Link>
+                </Button>
                 <Button asChild className="w-full">
                   <Link href="/submit">Submit Tool</Link>
                 </Button>

@@ -164,7 +164,27 @@ export function ToolsManager({ tools, categories, vendors }: ToolsManagerProps) 
                         <Button variant="ghost" size="sm" onClick={() => handleEditTool(tool)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={async () => {
+                            if (confirm("Are you sure you want to delete this tool?")) {
+                              try {
+                                const response = await fetch(`/api/admin/tools/${tool.id}`, {
+                                  method: "DELETE",
+                                })
+                                if (response.ok) {
+                                  window.location.reload()
+                                } else {
+                                  const errorData = await response.json()
+                                  alert(errorData.error || "Failed to delete tool")
+                                }
+                              } catch (err) {
+                                alert("An error occurred while deleting the tool")
+                              }
+                            }
+                          }}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
