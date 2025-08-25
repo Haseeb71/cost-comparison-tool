@@ -6,11 +6,12 @@ import { Star, ExternalLink, Zap } from "lucide-react"
 import Link from "next/link"
 
 interface ToolsGridProps {
-  searchParams: { search?: string; category?: string; pricing?: string }
+  searchParams: Promise<{ search?: string; category?: string; pricing?: string }>
 }
 
 export async function ToolsGrid({ searchParams }: ToolsGridProps) {
   const supabase = await createClient()
+  const params = await searchParams
 
   let query = supabase
     .from("tools")
@@ -22,16 +23,16 @@ export async function ToolsGrid({ searchParams }: ToolsGridProps) {
     .eq("is_published", true)
 
   // Apply filters
-  if (searchParams.search) {
-    query = query.or(`name.ilike.%${searchParams.search}%,description.ilike.%${searchParams.search}%`)
+  if (params.search) {
+    query = query.or(`name.ilike.%${params.search}%,description.ilike.%${params.search}%`)
   }
 
-  if (searchParams.category) {
-    query = query.eq("category.slug", searchParams.category)
+  if (params.category) {
+    query = query.eq("category.slug", params.category)
   }
 
-  if (searchParams.pricing) {
-    query = query.eq("pricing_model", searchParams.pricing)
+  if (params.pricing) {
+    query = query.eq("pricing_model", params.pricing)
   }
 
   const { data: tools, error } = await query

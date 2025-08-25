@@ -12,9 +12,10 @@ import { LoadingSpinner } from "@/components/loading-spinner"
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: { search?: string; category?: string; pricing?: string }
+  searchParams: Promise<{ search?: string; category?: string; pricing?: string }>
 }) {
   const supabase = await createClient()
+  const params = await searchParams
 
   // Get categories for filters
   const { data: categories } = await supabase.from("categories").select("*").order("name")
@@ -69,7 +70,7 @@ export default async function HomePage({
             <SearchAndFilters categories={categories || []} />
 
             <Suspense fallback={<LoadingSpinner />}>
-              <ToolsGrid searchParams={searchParams} />
+              <ToolsGrid searchParams={Promise.resolve(params)} />
             </Suspense>
           </div>
         </section>
