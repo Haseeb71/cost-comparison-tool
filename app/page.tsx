@@ -30,13 +30,13 @@ export default async function HomePage({
     .limit(6)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-900">
       <Header />
 
       <main>
         <Hero />
 
-        <Suspense fallback={<div className="py-16 px-4 text-center">Loading...</div>}>
+        <Suspense fallback={<div className="py-16 px-4 text-center text-white">Loading...</div>}>
           <AnimatedSections 
             featuredTools={featuredTools || []} 
             categories={categories || []} 

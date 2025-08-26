@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Sparkles, TrendingUp, Shield } from "lucide-react"
+import { Search, Sparkles, TrendingUp, Shield, Star } from "lucide-react"
 import { motion } from "framer-motion"
 
 export function Hero() {
@@ -29,121 +29,78 @@ export function Hero() {
     }
   }
 
-  const statsVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.5
-      }
-    }
-  }
-
   return (
-    <section className="relative py-20 px-4 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+    <section className="relative py-16 px-4 bg-gray-900">
       <motion.div 
         className="max-w-4xl mx-auto text-center"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <motion.div 
-          className="flex justify-center mb-6"
-          variants={itemVariants}
-        >
-          <div className="flex items-center space-x-2 bg-primary/10 rounded-full px-4 py-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Discover the Future of AI</span>
-          </div>
-        </motion.div>
-
         <motion.h1 
-          className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent"
+          className="text-4xl md:text-5xl font-bold mb-6 text-white"
           variants={itemVariants}
         >
-          Find the Perfect AI Tool for Every Task
+          Find a better AI tool for you
         </motion.h1>
 
         <motion.p 
-          className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed"
+          className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
-          Compare features, pricing, and reviews of 1000+ AI tools. Make informed decisions with our comprehensive
-          database and expert insights.
+          Compare features, pricing, and reviews of the best AI tools. Make informed decisions with our comprehensive database.
         </motion.p>
 
         {/* Search Bar */}
         <motion.div 
-          className="max-w-2xl mx-auto mb-8"
+          className="max-w-2xl mx-auto mb-12"
           variants={itemVariants}
         >
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               placeholder="Search for AI writing tools, image generators, chatbots..."
-              className="pl-12 pr-4 py-6 text-lg rounded-xl border-2 focus:border-primary"
+              className="pl-12 pr-4 py-4 text-lg rounded-lg border-2 border-gray-600 bg-gray-800 text-white placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
             />
-            <Button className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-lg">Search</Button>
+            <Button className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-md bg-blue-600 hover:bg-blue-700">
+              Search
+            </Button>
           </div>
         </motion.div>
 
-        {/* CTA Buttons */}
+        {/* Quick Category Pills */}
         <motion.div 
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+          className="flex flex-wrap gap-3 justify-center mb-8"
           variants={itemVariants}
         >
-          <Button asChild size="lg" className="rounded-xl">
-            <Link href="/tools">Browse All Tools</Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="rounded-xl bg-transparent">
-            <Link href="/categories">Explore Categories</Link>
-          </Button>
+          {['Writing Tools', 'Image Generation', 'Chatbots', 'Video Creation', 'Code Assistants', 'Data Analysis'].map((category) => (
+            <Button
+              key={category}
+              variant="outline"
+              className="rounded-full border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-gray-500 hover:text-white"
+            >
+              {category}
+            </Button>
+          ))}
         </motion.div>
 
-        {/* Stats */}
+        {/* Trust Indicators */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          className="flex items-center justify-center gap-6 text-sm text-gray-400"
+          variants={itemVariants}
         >
-          <motion.div 
-            className="text-center"
-            variants={statsVariants}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex justify-center mb-2">
-              <TrendingUp className="h-8 w-8 text-primary" />
-            </div>
-            <div className="text-2xl font-bold">1000+</div>
-            <div className="text-muted-foreground">AI Tools Listed</div>
-          </motion.div>
-          <motion.div 
-            className="text-center"
-            variants={statsVariants}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex justify-center mb-2">
-              <Shield className="h-8 w-8 text-primary" />
-            </div>
-            <div className="text-2xl font-bold">50K+</div>
-            <div className="text-muted-foreground">Verified Reviews</div>
-          </motion.div>
-          <motion.div 
-            className="text-center"
-            variants={statsVariants}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex justify-center mb-2">
-              <Sparkles className="h-8 w-8 text-primary" />
-            </div>
-            <div className="text-2xl font-bold">25+</div>
-            <div className="text-muted-foreground">Categories</div>
-          </motion.div>
+          <div className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            <span>Expert Reviews</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Star className="h-4 w-4" />
+            <span>Verified Ratings</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            <span>Updated Daily</span>
+          </div>
         </motion.div>
       </motion.div>
     </section>
